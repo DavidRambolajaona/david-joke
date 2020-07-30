@@ -1,0 +1,51 @@
+html, body{
+    height: 100%;
+}
+
+.app-bg-bluedark{
+    background-color: #00052A;
+}
+
+.navbar-toggler .line{
+    width: 100%;
+    float: left;
+    height: 2px;
+    background-color: #fff;
+    margin-bottom: 5px;
+}
+
+.nav-item:hover, .navbar-brand:hover{
+    background-color: #141441;
+    color: #000000;
+}
+
+.app-bg-1{
+    background-color: #000011;
+}
+
+.app-bg-gradient-1{
+    background-image: radial-gradient(circle, #000000, #040002, #060006, #05000c, #000011);
+}
+
+.app-text-ln{
+    white-space: pre-wrap;
+}
+
+.app-clickable:hover{
+    cursor: pointer;
+}
+
+#fondu-noir{
+    z-index: 999; 
+    position: fixed;
+    width:100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.app-textarea{
+    resize: none;
+}

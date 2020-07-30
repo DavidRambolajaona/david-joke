@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Se connecter</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="container h-100 d-flex flex-column justify-content-center">
+
+    {% include 'includes/navbar.html' %}
+
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <h1 class="text-center mb-5 text-white">Connexion</h1>
+            <form class="mb-5 p-4 border border-white rounded">
+                <div class="form-row mb-3">
+                    <label for="user_name" class="col-sm-4 text-white">Nom d'utilisateur : </label>
+                    <input type="text" id="user_name" name="user_name" class="form-control col-sm-8" required autocomplete="off">
+                </div>
+                <div class="form-row mb-3">
+                    <label for="user_password" class="col-sm-4 text-white">Mot de passe : </label>
+                    <input type="password" id="user_password" name="user_password" class="form-control col-sm-8" required autocomplete="off">
+                </div>
+                <div class="form-row">
+                    <button type="submit" class="btn btn-outline-light mx-auto mt-3">Se connecter</button>
+                </div>
+            </form>
+            <div class="row mt-4">
+                <a href="/register" class="text-light mx-auto" style="text-decoration: underline;">Pas de compte ? S'inscrire</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+{% include 'includes/scriptjs.html' %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/app/login.js') }}"></script>
+
+{% endblock %}

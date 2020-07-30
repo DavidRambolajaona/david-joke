@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Gestion des catégories</title>
+{% endblock %}
+
+{% block body %}
+
+<h2>Ajouter une catégorie</h2>
+<form method="POST" action="/managing-categories">
+    <p>
+        <label>Nom de la catégorie : </label>
+        <input type="text" name="category_text">
+    </p>
+    <p>
+        <label>Description : </label>
+        <textarea name="category_description"></textarea>
+    </p>
+    <p>
+        <input type="submit" value="OK">
+    </p>
+</form>
+
+<h2>Liste des catégories</h2>
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Nom</th>
+        <th>Description</th>
+        <th>Date de création</th>
+        <th>Date de dernière modification</th>
+        <th>Le créateur</th>
+    </tr>
+    {% for cat in categories %}
+    <tr>
+        <td>{{cat.category_id}}</td>
+        <td>{{cat.category_text}}</td>
+        <td>{{cat.category_description}}</td>
+        <td>{{cat.category_date_creation}}</td>
+        <td>{{cat.category_date_last_modification}}</td>
+        <td>{{cat.category_user.user_name}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock %}

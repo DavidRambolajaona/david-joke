@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>David Joke</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="container pt-5 h-100">
+
+    {% include 'includes/navbar.html' %}
+
+    {% if random_joke %}
+    <div class="row mt-5">
+        <div class="col-sm-12 d-flex justify-content-center">
+            <button type="button" id="btn_generate_random_joke" class="btn btn-outline-light btn-lg">Générer une blague aléatoire</button>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-sm-12">
+            <h4><span id="show_random_joke_category" class="badge badge-danger">{{random_joke.joke_category.category_text}}</span></h4>
+            <p id="show_random_joke_text" class="text-white app-text-ln">{{random_joke.joke_text}}</p>
+        </div>
+    </div>
+    {% else %}
+    <div class="row mt-5">
+        <div class="col-sm-12 d-flex justify-content-center">
+            <p class="text-white">Il n'y a pas encore de blague dans la base de donnée :(</p>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+
+
+{% include 'includes/scriptjs.html' %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/app/index.js') }}"></script>
+
+{% endblock %}

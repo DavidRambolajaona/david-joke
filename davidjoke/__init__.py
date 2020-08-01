@@ -7,7 +7,7 @@ db = SQLAlchemy()
 
 def create_app():
     """Construct the core application."""
-    app = Flask(__name__, instance_relative_config=False)
+    app = Flask(__name__)
     # app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://david_joke_user:david_joke_password@localhost/david_joke_database'
     app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
     app.secret_key = os.environ.get('SECRET')

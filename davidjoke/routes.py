@@ -1,8 +1,22 @@
-from flask import Flask, render_template, url_for, request, redirect, jsonify
-"""from flask_sqlalchemy import SQLAlchemy"""
+from flask import Flask, render_template, url_for, request, redirect, jsonify, session
 from flask import current_app as app
+from sqlalchemy import or_, and_
 from .models import db, User, Category, Joke, Configuration, Message
 import random
+from datetime import datetime
+import hashlib
+
+@app.before_request
+def beforeRequest():
+    if "user_connected" not in session :
+        session["user_connected"] = False
+        if "user_info" not in session :
+            session["user_info"] = {"user_id": None, "user_name": None}
+
+@app.after_request
+def afterRequest(response):
+    # we have a response to manipulate, always return one
+    return response
 
 @app.route('/')
 @app.route('/index/')
@@ -24,6 +38,8 @@ def jokes():
 
 @app.route('/register', methods=["GET", "POST"])
 def register() :
+    if session["user_connected"] :
+        return redirect("/logout")
     if request.method == 'POST' :
         nom = request.form["user_name"]
         mdp = request.form["user_password"]
@@ -33,21 +49,28 @@ def register() :
         db.session.add(user)
         db.session.commit()
 
+        session["user_connected"] = True
+        session["user_info"] = {"user_id": user.user_id, "user_name": user.user_name}
+
         return redirect("/")
     return render_template("register.html", bgBlueDark=True)
 
 
 @app.route('/login')
 def login() :
+    if session["user_connected"] :
+        return redirect("/logout")
     return render_template("login.html", bgBlueDark=True)
 
 
 @app.route('/managing-categories', methods=['GET', 'POST'])
 def manageCategories() :
+    if not session["user_connected"] :
+        return redirect("/login")
     if request.method == "POST" :
         text = request.form["category_text"]
         description = request.form["category_description"]
-        user_id = 1
+        user_id = session["user_info"]["user_id"]
         #user = db.session.query(User).get(user_id)
         category = Category(text, description, user_id)
 
@@ -63,15 +86,52 @@ def manageCategories() :
 @app.route('/add-joke', methods=['POST'])
 def addJoke() :
     if request.method == 'POST' :
-        joke_category_id = request.form['add_joke_category_id']
-        joke_text = request.form['add_joke_text']
-        joke_user_id = 1
-        joke = Joke(joke_text, joke_user_id, joke_category_id)
-        
-        db.session.add(joke)
-        db.session.commit()
+        if session["user_connected"] :
+            joke_category_id = request.form['add_joke_category_id']
+            joke_text = request.form['add_joke_text']
+            joke_user_id = session["user_info"]["user_id"]
+            joke = Joke(joke_text, joke_user_id, joke_category_id)
+            
+            db.session.add(joke)
+            db.session.commit()
 
     return redirect('/jokes')
+
+@app.route('/update-category', methods=['POST'])
+def updateCategory() :
+    if request.method == 'POST': 
+        cat_id = request.form["category_id"]
+        cat_text = request.form["category_text"]
+        cat = Category.query.get(cat_id)
+        cat.category_text = cat_text
+        db.session.commit()
+    return redirect("/managing-categories")
+
+@app.route('/login-redirect', methods=['POST'])
+def loginRedirect() :
+    if request.method == 'POST' :
+        user_name = request.form["user_name"]
+        user = User.query.filter_by(user_name=user_name).first()
+        user.user_date_last_connection = datetime.utcnow()
+        session["user_connected"] = True
+        session["user_info"] = {"user_id": user.user_id, "user_name": user.user_name}
+        db.session.commit()
+    return redirect('/jokes')
+
+@app.route('/logout')
+def logout() :
+    session["user_connected"] = False
+    session["user_info"] = {"user_id": None, "user_name": None}
+    return redirect('/login')
+
+@app.route('/user/<user_id>')
+def userProfil(user_id) :
+    user = User.query.get(user_id)
+    return render_template("user_profil.html", user=user)
+
+@app.route('/info')
+def info() :
+    return render_template("info.html")
 
 
 @app.route('/api/get-urls')
@@ -115,6 +175,7 @@ def getJokesAPI() :
         dateFormatLastModif = joke.joke_date_last_modification.strftime("%d/%m/%Y à %H:%M:%S GMT")
         jokeDict["joke_date_last_modification"] = dateFormatLastModif
         jokeDict["joke_enabled"] = joke.joke_enabled
+        jokeDict["joke_editable"] = joke.joke_user.user_id == session["user_info"]["user_id"]
         jokesList.append(jokeDict)
     for cat in categories :
         catDict = {}
@@ -130,5 +191,46 @@ def getJokesAPI() :
 
 @app.route('/api/save-joke', methods=['POST'])
 def saveJokeAPI() :
-    ret = {"success": False, "message": "", "data": None}
+    ret = {"success": False, "message": "", "data": {}}
+    joke_id = request.form["joke_id"]
+    joke_enabled = request.form["joke_enabled"]
+    joke_category_id = request.form["joke_category_id"]
+    joke_text = request.form["joke_text"]
+    
+    joke = Joke.query.get(joke_id)
+    if session["user_info"]["user_id"] == joke.joke_user.user_id :
+        joke.joke_enabled = joke_enabled == "true"
+        joke.joke_category_id = joke_category_id
+        joke.joke_text = joke_text
+        dateNow = datetime.utcnow()
+        joke.joke_date_last_modification = dateNow
+
+        db.session.commit()
+
+        ret["success"] = True
+        dateFormatLastModif = dateNow.strftime("%d/%m/%Y à %H:%M:%S GMT")
+        ret["data"]["date_last_modification"] = dateFormatLastModif
+    else :
+        ret["message"] = "Différents ID. L'ID du créateur de la blague est différent de celui qui tente de sauvegarder."
+
+    return jsonify(ret)
+
+@app.route("/api/check-login", methods=["POST"])
+def checkLoginAPI() :
+    ret = {"success": False, "message": ""}
+    user_name = request.form["user_name"]
+    user_password = request.form["user_password"]
+    user_password_md5 = hashlib.md5(user_password.encode('utf-8')).hexdigest()
+    user = User.query.filter(and_(User.user_name==user_name, User.user_password==user_password_md5)).first()
+    if user :
+        ret["success"] = True
+    return jsonify(ret)
+
+@app.route("/api/check-name-user", methods=["POST"])
+def checkNameUserAPI() :
+    ret = {"success": False, "message": ""}
+    user_name = request.form["user_name"]
+    user = User.query.filter_by(user_name=user_name).first()
+    if user :
+        ret["success"] = True
     return jsonify(ret)

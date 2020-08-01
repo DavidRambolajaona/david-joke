@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Profil : {{user.user_name}}</title>
+{% endblock %}
+
+{% block body %}
+
+<div class="container h-100 d-flex flex-column justify-content-center">
+
+    {% include 'includes/navbar.html' %}
+
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+            <div class="text-white">
+                Cette fonctionnalité n'est pas encore disponible ^^"<br>
+                Le site est encore en développement
+            </div>>
+        </div>
+    </div>
+
+</div>
+
+
+
+{% include 'includes/scriptjs.html' %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/app/user_profil.js') }}"></script>
+
+{% endblock %}

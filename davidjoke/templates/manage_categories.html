@@ -33,7 +33,7 @@
         <th>Le créateur</th>
     </tr>
     {% for cat in categories %}
-    <tr>
+    <tr class="row-cat" cat-id="{{cat.category_id}}" cat-text="{{cat.category_text}}" data-toggle="modal" data-target="#modalCategory">
         <td>{{cat.category_id}}</td>
         <td>{{cat.category_text}}</td>
         <td>{{cat.category_description}}</td>
@@ -44,5 +44,48 @@
     {% endfor %}
 </table>
 
+
+<!-- The Modal -->
+<div class="modal fade" id="modalCategory">
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+      <div class="modal-content">
+  
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Modal Heading</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+  
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="">
+            <form method="POST" action="/update-category">
+
+                <input id="category_id" type="hidden" name="category_id" value="">
+  
+                <div class="form-group">
+                    <label for="category_text" class="">Nom de la catégorie : </label>
+                    <input id="category_text" name="category_text" class="form-control" required>
+                    <div class="invalid-feedback">Le texte de la blague ne doit pas être vide</div>
+                </div>
+
+                <button class="btn btn-outline-primary" type="submit">OK</button>
+  
+            </form>
+          </div>
+        </div>
+  
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Fermer</button>
+        </div>
+  
+      </div>
+    </div>
+  </div>
+
+
+{% include 'includes/scriptjs.html' %}
+<script type="text/javascript" src="{{ url_for('static', filename='js/app/manage_categories.js') }}"></script>
 
 {% endblock %}

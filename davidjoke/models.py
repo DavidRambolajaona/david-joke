@@ -15,9 +15,10 @@ class User(db.Model) :
     user_id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(50), unique=True, nullable=False)
     user_password = db.Column(db.String(50), nullable=False)
-    user_email = db.Column(db.String(50), unique=True)
+    user_email = db.Column(db.String(50))
     user_date_creation = db.Column(db.DateTime, default = datetime.utcnow)
     user_date_last_modification = db.Column(db.DateTime, default = datetime.utcnow)
+    user_date_last_connection = db.Column(db.DateTime, default = datetime.utcnow)
     user_categories = db.relationship('Category', back_populates="category_user")
     user_jokes = db.relationship("Joke", back_populates="joke_user")
 

@@ -6,36 +6,44 @@
 
 {% block body %}
 
-<div class="container h-100 d-flex flex-column justify-content-center">
+<div class="container h-100 d-flex flex-column justify-content-center mb-5">
 
     {% include 'includes/navbar.html' %}
 
-    <div class="row">
+    <div class="row mt-5">
 
         <div class="col-md-6 mx-auto">
     
             <h1 class="text-center mb-3 mt-5 text-white">Inscrivez-vous</h1>
-            <form method="POST" action="/register" class="mb-5 p-4 border border-white rounded">
+            <form method="POST" action="/register" class="mb-4 p-4 border border-white rounded">
                 <div class="form-row mb-3">
                     <label for="user_name" class="col-sm-5 text-white">Votre nom : </label>
                     <input type="text" name="user_name" id="user_name" class="form-control col-sm-7" placeholder="Ex : Bruno Mars" autocomplete="off" required>
+                    <div id="indicationNomValidation" class="invalid-feedback">Le nom ne doit pas être vide</div>
                 </div>
                 <div class="form-row mb-3">
                     <label for="user_password" class="col-sm-5 text-white">Mot de passe : </label>
                     <input type="password" name="user_password" id="user_password" class="form-control col-sm-7" required>
+                    <div class="invalid-feedback">Le mot de passe ne doit pas être vide</div>
                 </div>
                 <div class="form-row mb-3">
                     <label for="user_password_second" class="col-sm-5 text-white">Retapez le mot de passe : </label>
                     <input type="password" name="user_password_second" id="user_password_second" class="form-control col-sm-7" required>
+                    <div class="invalid-feedback">Les deux mots de passe doivent être identiques</div>
                 </div>
                 <div class="form-row mb-3">
-                    <label for="user_email" class="col-sm-5 text-white">Email (facultatif) : </label>
-                    <input type="email" name="user_email" id="user_email" class="form-control col-sm-7" placeholder="Ex : bruno.mars@hahaha.hoho.com">
+                    <label for="user_email" class="col-sm-5 text-white">Email (facultatif mais recommendé) : </label>
+                    <input type="email" pattern="^[a-zA-Z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$" name="user_email" id="user_email" class="form-control col-sm-7" placeholder="Ex : bruno.mars@hahaha.hoho.com">
+                    <div class="invalid-feedback">Ceci n'est pas une adresse email</div>
                 </div>
                 <div class="form-row">
-                    <button type="submit" class="btn btn-outline-light mx-auto mt-3">S'inscrire</button>
+                    <button id="btnRegister" type="submit" class="btn btn-outline-light mx-auto mt-3">S'inscrire</button>
                 </div>
             </form>
+
+            <div class="row mt-1">
+                <span class="text-white mx-auto"><a href="/login" style="text-decoration: underline;">Se connecter</a></span>
+            </div>
 
         </div>
 

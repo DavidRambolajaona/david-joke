@@ -34,7 +34,8 @@
 
             <div class="form-group mt-2">
                 <label for="joke_text" class="">Texte de la blague : </label>
-                <textarea id="joke_text" class="form-control app-textarea" rows="6">Hmmm...</textarea>
+                <textarea id="joke_text" name="joke_text" class="form-control app-textarea" rows="6" required>Hmmm...</textarea>
+                <div class="invalid-feedback">Le texte de la blague ne doit pas être vide</div>
             </div>
 
           </form>
@@ -81,6 +82,7 @@
             <div class="form-group">
               <label for="add_joke_text">Texte de la blague : </label>
               <textarea id="add_joke_text" name="add_joke_text" class="form-control app-textarea" rows="6" required></textarea>
+              <div class="invalid-feedback">Le texte de la blague ne doit pas être vide</div>
             </div>
           </form>
         </div>

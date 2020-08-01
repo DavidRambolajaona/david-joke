@@ -13,7 +13,7 @@
     <div class="row">
         <div class="col-md-6 mx-auto">
             <h1 class="text-center mb-5 text-white">Connexion</h1>
-            <form class="mb-5 p-4 border border-white rounded">
+            <form id="formLogin" class="mb-5 p-4 border border-white rounded" method="POST" action="/login-redirect">
                 <div class="form-row mb-3">
                     <label for="user_name" class="col-sm-4 text-white">Nom d'utilisateur : </label>
                     <input type="text" id="user_name" name="user_name" class="form-control col-sm-8" required autocomplete="off">
@@ -22,12 +22,13 @@
                     <label for="user_password" class="col-sm-4 text-white">Mot de passe : </label>
                     <input type="password" id="user_password" name="user_password" class="form-control col-sm-8" required autocomplete="off">
                 </div>
+                <p id="indication" class="my-0 d-none" style="color: red;">Nom d'utilisateur ou mot de passe invalide ou ne correspond pas</p>
                 <div class="form-row">
-                    <button type="submit" class="btn btn-outline-light mx-auto mt-3">Se connecter</button>
+                    <button id="btnLogin" type="submit" class="btn btn-outline-light mx-auto mt-3">Se connecter</button>
                 </div>
             </form>
             <div class="row mt-4">
-                <a href="/register" class="text-light mx-auto" style="text-decoration: underline;">Pas de compte ? S'inscrire</a>
+                <span class="text-white mx-auto">Pas de compte ? <a href="/register" style="text-decoration: underline;">S'inscrire</a></span>
             </div>
         </div>
     </div>

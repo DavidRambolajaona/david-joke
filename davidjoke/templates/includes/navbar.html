@@ -14,14 +14,23 @@
 
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav ml-auto app-bg-bluedark">
-            <li class="nav-item p-2">
-                <a class="nav-link text-white" href="/login">Se connecter</a>
-            </li>
+            {% if not session["user_connected"] %}
+                <li class="nav-item p-2">
+                    <a class="nav-link text-white" href="/login">Se connecter</a>
+                </li>
+            {% else %}
+                <li class="nav-item p-2">
+                    <a class="nav-link text-white" href="/user/{{session['user_info']['user_id']}}">{{session["user_info"]["user_name"]}}</a>
+                </li>
+                <li class="nav-item p-2">
+                    <a class="nav-link text-white" href="/logout">Se déconnecter</a>
+                </li>
+            {% endif %}
             <li class="nav-item p-2">
                 <a class="nav-link text-white" href="/jokes">Gestion des blagues</a>
             </li>
             <li class="nav-item p-2">
-                <a class="nav-link text-white" href="#">Info</a>
+                <a class="nav-link text-white" href="/info">Info</a>
             </li>
         </ul>
     </div>
